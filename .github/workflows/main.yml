@@ -10,14 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      - run: npx playwright install --with-deps
+      - name: Install Playwright
+        run: npx playwright install --with-deps
 
-      - run: node src/extract.js
+      - name: Run extractor
+        run: node src/extract.js
+
+      - name: Commit latest.m3u
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
+          git add latest.m3u
+          git commit -m "update stream" || echo "no changes"
+          git push
