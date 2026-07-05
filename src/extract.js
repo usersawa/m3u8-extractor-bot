@@ -1,40 +1,50 @@
 const { chromium } = require("playwright");
+const fs = require("fs");
 
 const TARGET_URL =
   "https://www.hunalondon.net/ar/live-tv?live-channel=23464";
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-
   const page = await browser.newPage();
 
-  const found = new Set();
+  let lastM3U8 = null;
 
   page.on("request", (req) => {
     const url = req.url();
 
     if (url.includes(".m3u8")) {
       console.log("🎯 FOUND M3U8:", url);
-      found.add(url);
+      lastM3U8 = url; // نخزن آخر رابط فقط
     }
   });
 
   console.log("🚀 Opening page...");
 
   await page.goto(TARGET_URL, {
-    waitUntil: "networkidle"
+    waitUntil: "networkidle",
   });
 
-  console.log("⏳ Waiting for stream to load...");
+  console.log("⏳ Waiting for stream...");
 
   await page.waitForTimeout(15000);
 
   console.log("\n===== FINAL RESULTS =====");
 
-  if (found.size === 0) {
+  if (!lastM3U8) {
     console.log("❌ No m3u8 found");
   } else {
-    console.log([...found]);
+    console.log("✅ FINAL M3U8:", lastM3U8);
+
+    // 🟢 تحويله إلى ملف M3U
+    const m3uContent = `#EXTM3U
+#EXTINF:-1,Live Stream
+${lastM3U8}
+`;
+
+    fs.writeFileSync("latest.m3u", m3uContent);
+
+    console.log("💾 Saved: latest.m3u");
   }
 
   await browser.close();
