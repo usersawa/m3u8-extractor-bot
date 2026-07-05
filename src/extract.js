@@ -37,9 +37,9 @@ const TARGET_URL =
     console.log("✅ FINAL M3U8:", lastM3U8);
 
     // 🟢 تحويله إلى ملف M3U
-    fs.writeFileSync("latest.m3u", lastM3U8);
+    fs.writeFileSync("latest.m3u8", lastM3U8);
 
-    console.log("💾 Saved: latest.m3u");
+    console.log("💾 Saved: latest.m3u8");
   }
 
   await browser.close();
