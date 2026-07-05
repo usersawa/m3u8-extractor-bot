@@ -37,10 +37,7 @@ const TARGET_URL =
     console.log("✅ FINAL M3U8:", lastM3U8);
 
     // 🟢 تحويله إلى ملف M3U
-    const m3uContent = `#EXTM3U
-#EXTINF:-1,Live Stream
-${lastM3U8}
-`;
+    fs.writeFileSync("latest.m3u", lastM3U8);
 
     fs.writeFileSync("latest.m3u", m3uContent);
 
