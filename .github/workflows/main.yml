@@ -27,10 +27,10 @@ jobs:
       - name: Run extractor
         run: node src/extract.js
 
-      - name: Commit latest.m3u
+      - name: Commit latest.m3u8
         run: |
           git config --global user.name "bot"
           git config --global user.email "bot@github.com"
-          git add latest.m3u
+          git add latest.m3u8
           git commit -m "update stream" || echo "no changes"
           git push
